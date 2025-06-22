@@ -1,31 +1,41 @@
 '''
 This endpoint is used to send commands to the iot devices through the MQTT broker,
-each device is associated to a specific top and is subscribed to it.
+each device is associated to a specific topic To which it is subscribed.
+Since commands need to be modified and not created(for example,on/off,changing the 
+motor's speed,etc.), we will be using patch requests.
+)
 '''
 from fastapi import APIRouter,HTTPException
 from app.core.mqtt import mqtt
 from .. import schemas
 from app.core import topics
-from app.crud_services import device_service
 router=APIRouter(
     prefix="/command",
     tags=["SEND COMMANDS TO THE MQTT BROKER'S TOPICS"]
 )
-#Send commands to the iot device 2
-#Send commands to the iot device 1
-@router.post("/device1")
-async def publish_command(payload:schemas.Command):
+#Endpoint to Send State update commands to the iot device 1
+@router.patch("/device1/state/update")
+async def device1_state(payload:schemas.Command):
+    #print("Recievided  via post",payload.data)
     try:
-        mqtt.publish(topics.device1_topic, payload.data)
-        return {"status": "success", "topic":topics.device1_topic, "message": payload.data}
+        mqtt.publish(topics.device1_state_topic, payload.state)
+        return {"status": "success", "topic":topics.device1_state_topic, "message": payload.state}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to publish MQTT message: {e}")
-#Send commands to the iot device 2
-@router.post("/device2")
-async def publish_command(payload:schemas.Command):
+#Endpoint to Send State update commands to the iot device 2
+@router.patch("/device2/state/update")
+async def device2_state(payload:schemas.Command):
     try:
-        mqtt.publish(topics.device2_topic, payload.data)
-        return {"status": "success", "topic":topics.device2_topic, "message": payload.data}
+        mqtt.publish(topics.device2_state_topic, payload.state)
+        return {"status": "success", "topic":topics.device2_state_topic, "message": payload.state}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to publish MQTT message: {e}")
 #We can add as may devices as required
+#mock
+@router.post("/device1/data")
+async def device2_state(payload:schemas.Data):
+    try:
+        mqtt.publish(topics.device1_data_topic, payload.data)
+        return {"status": "success", "topic":topics.device1_data_topic, "message": payload.data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to publish MQTT message: {e}")

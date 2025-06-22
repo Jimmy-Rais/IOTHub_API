@@ -11,6 +11,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-#app.include_router(devices.router)
+app.include_router(devices.router)
 app.include_router(commands.router)
 mqtt.init_app(app)
