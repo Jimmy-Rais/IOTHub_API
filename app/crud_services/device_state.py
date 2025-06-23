@@ -13,7 +13,7 @@ async def device1_state(state):
         return e
 #Read the state of iot_device1
 def device1_read_state():
-    response=db.table('iot_device1_state').select('state').execute()
+    response=db.table('iot_device1_state').select('state','last_modified').execute()
     return response.data[0]
 #iot_device2 update state
 async def device2_state(state):
@@ -24,5 +24,8 @@ async def device2_state(state):
         return e
 #iot_device2 read state
 def device2_read_state():
-    response=db.table('iot_device2_state').select('state').execute()
+    response=db.table('iot_device2_state').select('state','last_modified').execute()
     return response.data[0]
+#iot_device1_latest_data
+def device1_latest():
+    response=db.table('iot_device1_data').select('data').eq().execute

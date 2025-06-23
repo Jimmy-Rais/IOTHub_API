@@ -44,10 +44,9 @@ async def handle_message(client, topic, payload, qos, properties):
        asyncio.create_task(handler(new_payload))
    
     #Handles incoming data from the iot device
-    elif (topic==topics.device1_data_topic):
+    elif (topic==topics.device1_data_topic or topic==topics.device2_data_topic):
        data= payload.decode()
        new_payload = {"data":data}
-       print(new_payload)
        #crud_service handler for specific iot device according to the topic
        handler=topics.data_topic_handler.get(topic)
        asyncio.create_task(handler(new_payload))

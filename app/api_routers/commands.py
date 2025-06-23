@@ -31,11 +31,3 @@ async def device2_state(payload:schemas.Command):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to publish MQTT message: {e}")
 #We can add as may devices as required
-#mock
-@router.post("/device1/data")
-async def device2_state(payload:schemas.Data):
-    try:
-        mqtt.publish(topics.device1_data_topic, payload.data)
-        return {"status": "success", "topic":topics.device1_data_topic, "message": payload.data}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to publish MQTT message: {e}")
