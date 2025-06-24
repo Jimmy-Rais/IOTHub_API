@@ -11,6 +11,9 @@ router=APIRouter(
 def signup(credentials:schemas.UserSignup):
     return auth.signup(credentials)
 #Login
+@router.post("/signin")
+def signin(credentials:schemas.UserSignup):
+    return auth.signin(credentials)
 #Login with magic link
 #Forgot password
 #Refresh token

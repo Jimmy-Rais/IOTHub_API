@@ -9,13 +9,16 @@ from fastapi import APIRouter,HTTPException
 from app.core.mqtt import mqtt
 from .. import schemas
 from app.core import topics
+from app.utils import auth
+from fastapi import Depends
 router=APIRouter(
     prefix="/command",
     tags=["SEND COMMANDS TO THE MQTT BROKER'S TOPICS"]
 )
+#Only authenticated users can access these endpoints
 #Endpoint to Send State update commands to the iot device 1
 @router.patch("/device1/state/update")
-async def device1_state(payload:schemas.Command):
+async def device1_state(payload:schemas.Command,user=Depends(auth.verify_token)):
     #print("Recievided  via post",payload.data)
     try:
         mqtt.publish(topics.device1_state_topic, payload.state)
