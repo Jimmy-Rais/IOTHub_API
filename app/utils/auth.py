@@ -35,3 +35,11 @@ def verify_token(authorization: str = Header(...)):
         return user
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+#Login with email otp
+def login_otp(email):
+    response = database.supabase.auth.sign_in_with_otp({
+  'email':email,
+  'options': {
+    'should_create_user': False,
+  },
+})

@@ -27,7 +27,7 @@ async def device1_state(payload:schemas.Command,user=Depends(auth.verify_token))
         raise HTTPException(status_code=500, detail=f"Failed to publish MQTT message: {e}")
 #Endpoint to Send State update commands to the iot device 2
 @router.patch("/device2/state/update")
-async def device2_state(payload:schemas.Command):
+async def device2_state(payload:schemas.Command,user=Depends(auth.verify_token)):
     try:
         mqtt.publish(topics.device2_state_topic, payload.state)
         return {"status": "success", "topic":topics.device2_state_topic, "message": payload.state}
