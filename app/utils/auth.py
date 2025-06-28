@@ -9,15 +9,19 @@ def signup(credentials):
         "email":credentials.email,
         "password":credentials.password
     })
-    return "Verify your email"
+    return "A verification link has been sent to your email"
 #Log in user
 def signin(credentials):
-    session=database.supabase.auth.sign_in_with_password({
+    try:
+       session=database.supabase.auth.sign_in_with_password({
         "email":credentials.email,
         "password":credentials.password
-    })
-    access_token = session.session.access_token
-    return access_token
+       })
+       access_token = session.session.access_token
+       return access_token
+    except:
+        raise HTTPException(status_code=403,detail="Login failed,verify credentials")
+   
 #Signing out
 def signout():
     database.supabase.auth.signout()

@@ -6,3 +6,5 @@ class Data(BaseModel):
 class UserSignup(BaseModel):
     email:str
     password:str
+class SigninOtp(BaseModel):
+    email:str

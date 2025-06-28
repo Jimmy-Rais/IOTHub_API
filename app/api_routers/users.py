@@ -16,7 +16,7 @@ def signin(credentials:schemas.UserSignup):
     return auth.signin(credentials)
 #Login with otp(magic link)
 @router.post("/signin/otp")
-def otp_signin(email:str):
-    return auth.login_otp(email)
+def otp_signin(email:schemas.SigninOtp):
+    return auth.login_otp(email.email)
 #Forgot password
 #Refresh token
