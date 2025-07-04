@@ -1,6 +1,5 @@
-from fastapi.testclient import TestClient
-from app.main import app
-client=TestClient(app)
+from . import test_users
+client=test_users.client
 #Sensor
 def test_sensor1():
-     #response=client
+     response=client('')
