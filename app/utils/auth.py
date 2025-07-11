@@ -26,11 +26,8 @@ def signin(credentials):
 def signout():
     database.supabase.auth.signout()
 #Jwt auth
-def verify_token(authorization: str = Header(...)):
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid token format")
+def verify_token(token:str):
 
-    token = authorization.replace("Bearer ", "")
 
     try:
         user = database.supabase.auth.get_user(token).user

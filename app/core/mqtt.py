@@ -1,8 +1,9 @@
 from fastapi_mqtt import FastMQTT, MQTTConfig
 from . import config
-from . import topics
+from . import topics,ws
 from app.crud_services import device_state
 import asyncio
+from app.utils import helpers
 #Here,we handle all the connectivity operations on the mqtt broker
 BROKER_HOST = config.settings.broker_url
 BROKER_PORT = int( config.settings.broker_port)
@@ -33,23 +34,31 @@ def disconnect(client, packet, exc=None):
 # Handle incoming messages
 @mqtt.on_message()
 async def handle_message(client, topic, payload, qos, properties):
-    #Handles incoming state commands from the user
-    ''''''
-    if (topic==topics.device1_state_topic or topic==topics.device2_state_topic):
-       state= payload.decode()
-       new_payload = {"state":state}
-       print(new_payload)
-       #crud_service handler for specific iot device according to the topic
-       handler=topics.state_topic_handler.get(topic)
-       asyncio.create_task(handler(new_payload))
-   
-    #Handles incoming data from the iot device
-    elif (topic==topics.device1_data_topic or topic==topics.device2_data_topic):
-       data= payload.decode()
-       new_payload = {"data":data}
-       #crud_service handler for specific iot device according to the topic
-       handler=topics.data_topic_handler.get(topic)
-       asyncio.create_task(handler(new_payload))
-       print("suceess")
-    else:
-        return "Unmatched topic"
+    """
+    Handles MQTT messages:
+    - State topics: store + broadcast to clients subscribed to 'deviceX/state'
+    - Data topics:  store + broadcast to clients subscribed to 'deviceX/data'
+    """
+    from datetime import datetime
+
+    # For state topics
+    if topic == topics.device1_state_topic or topic == topics.device2_state_topic:
+        state = payload.decode()
+        new_payload = {"state": state}
+
+        print(new_payload)
+        # crud_service handler for specific IoT device according to the topic
+        handler = topics.state_topic_handler.get(topic)
+        asyncio.create_task(handler(new_payload))
+
+    # For data topics
+    elif topic == topics.device1_data_topic or topic == topics.device2_data_topic:
+        data = payload.decode()
+        new_payload = {"data": data}
+        print(new_payload)
+        # crud_service handler for specific IoT device according to the topic
+        handler = topics.data_topic_handler.get(topic)
+        asyncio.create_task(handler(new_payload))
+
+       
+       
